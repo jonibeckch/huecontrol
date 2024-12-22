@@ -10,6 +10,9 @@ VERSION_ID="12"
 VERSION="12 (bookworm)"
 ```
 
+Step 1:
+pip install flask phue
+
 
 ### I used the following guidance created by chatgpt:
 
