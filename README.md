@@ -62,7 +62,8 @@ bridge.connect()
 def turn_off_lights():
     lights = bridge.lights
     for light in lights:
-        light.off()
+#        light.off() -> This one didn't work and had to be replaced by the line below
+        light.on = False
 
 @app.route('/')
 def index():
