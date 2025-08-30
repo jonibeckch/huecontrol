@@ -1,0 +1,10 @@
+a {
+  background-color: #a61e4d;
+  color: #eee;
+  padding: 15px 25px;
+  text-decoration: none;
+}
+
+a: hover {
+  background-color: #d6336c;
+}
