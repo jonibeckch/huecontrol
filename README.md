@@ -1,9 +1,5 @@
 # simplehue
-A simple Project to control your hue lights with a raspberrypi, by opening pages on your local network
-
-# structure
-The Folder "templates" contains the html file, which will be rendered by home.py. 
-The Folder "static" contains the style.css file.
+A simple Project to control your hue lights with a raspberrypi, by opening pages on your local network. 
 
 ## Deploy Flask to WSGI Server for reliable use
 Flask is not designed to be run as a productive system. It should be deployed to as WSGI Server. Nevertheless due to minimize the effort it is currently used like this. For further Info see:
