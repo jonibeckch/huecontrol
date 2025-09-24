@@ -4,7 +4,12 @@
     <title>Hue Control</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<br>
-<p><a href="/on">Turn On</a>
-<br><br><br>
-<a href="/off">Turn Off</a></p>
+<body>
+    <div class="button-container">
+        <br>
+        {% for button in buttons %}
+        <p><a href="{{ button.route }}">{{ button.label }}</a></p>
+        <br>
+        {% endfor %}
+    </body>
+</html>
