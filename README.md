@@ -1,6 +1,10 @@
 # simplehue
 A simple Project to control your hue lights with a raspberrypi, by opening pages on your local network. 
 
+# preview of the new slider menu
+![alt text](slider.jpg)
+
+
 ## Deploy Flask to WSGI Server for reliable use
 Flask is not designed to be run as a productive system. It should be deployed to as WSGI Server. Nevertheless due to minimize the effort it is currently used like this. For further Info see:
 https://flask.palletsprojects.com/en/stable/deploying/
