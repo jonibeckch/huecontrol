@@ -1,15 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
+    <title>Raum Steuerung</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hue Control</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="button-container">
-        <br>
-        {% for button in buttons %}
-        <p><a href="{{ button.route }}">{{ button.label }}</a></p>
-        <br>
+    <h1>Raum Steuerung</h1>
+    
+    <div class="all-rooms-container">
+        <span class="all-rooms-label">Alle Räume (EG + Flur + Wohnzimmer)</span>
+        <label class="switch">
+            <input type="checkbox" 
+                   id="all-rooms-toggle" 
+                   {% if group_status['all'] %}checked{% endif %}>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <table>
+        <tr>
+            <th>Raum</th>
+            <th>Status</th>
+        </tr>
+        {% for group_key, group_info in groups.items() %}
+        {% if group_key != 'all' %}
+        <tr>
+            <td>{{ group_info.name }}</td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox" 
+                           data-group="{{ group_key }}" 
+                           {% if group_status[group_key] %}checked{% endif %}>
+                    <span class="slider"></span>
+                </label>
+            </td>
+        </tr>
+        {% endif %}
         {% endfor %}
-    </body>
+    </table>
+
+    <div class="plugs-container">
+        <h2>Steuerbare Steckdosen</h2>
+        {% for plug_key, plug_info in plugs.items() %}
+        <div class="plug-row">
+            <span class="plug-label">{{ plug_info.name }}</span>
+            <label class="switch">
+                <input type="checkbox" 
+                       data-group="{{ plug_key }}" 
+                       {% if plug_status[plug_key] %}checked{% endif %}>
+                <span class="slider"></span>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Alle Räume Toggle
+        document.getElementById('all-rooms-toggle').addEventListener('change', function() {
+            fetch('/toggle/all')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const allChecked = this.checked;
+                        document.querySelectorAll('.switch input[data-group="erdgeschoss"], .switch input[data-group="flur"], .switch input[data-group="wohnzimmer"]').forEach(checkbox => {
+                            checkbox.checked = allChecked;
+                        });
+                    } else {
+                        this.checked = !this.checked;
+                    }
+                })
+                .catch(error => {
+                    console.error('Fehler:', error);
+                    this.checked = !this.checked;
+                });
+        });
+
+        // Individuelle Raum- und Steckdosen-Slider
+        document.querySelectorAll('.switch input[data-group]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const group = this.getAttribute('data-group');
+                fetch(`/toggle/${group}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            this.checked = !this.checked;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fehler:', error);
+                        this.checked = !this.checked;
+                    });
+            });
+        });
+    </script>
+</body>
 </html>
