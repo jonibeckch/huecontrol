@@ -83,7 +83,7 @@ def index():
             print(f"Fehler beim Abrufen des Status für {plug_key}: {e}")
             plug_status[plug_key] = False
 
-    return render_template('room_control.html', 
+    return render_template('template.html', 
                            groups=GROUPS, 
                            plugs=PLUGS,
                            group_status=group_status,
