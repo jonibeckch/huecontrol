@@ -13,14 +13,15 @@ bridge.connect()
 
 # Function to turn off the lights
 def turn_off_lights():
-    lights = bridge.lights
-    for light in lights:
-        light.on = False
-        
+	bridge.set_group(1, 'on', False)
+	bridge.set_group(2, 'on', False)
+	bridge.set_group(3, 'on', False)
+
+# Function to turn on the lights
 def turn_on_lights():
-    lights = bridge.lights
-    for light in lights:
-        light.on = True
+	bridge.set_group(1, 'on', True)
+	bridge.set_group(2, 'on', True)
+	bridge.set_group(3, 'on', True)
 
 @app.route('/')
 def index():
