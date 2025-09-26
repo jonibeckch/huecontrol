@@ -134,7 +134,39 @@
             }
 
             .slider:before {
-                height: 22px;
-                width: 22px;
+                height: 20px;
+                width: 20px;
+                left: 4px;
+                bottom: 4px;
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(22px); /* Anpassung der Bewegung */
             }
         }
+
+        .all-rooms-control {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .all-rooms-control button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 20px; /* Abgerundete Ecken */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            outline: none;
+        }
+        .btn-on {
+            background-color: #2196F3; /* Blau wie eingeschaltete Slider */
+            color: white;
+        }
+        .btn-off {
+            background-color: #ccc; /* Grau wie ausgeschaltete Slider */
+            color: white;
+        }
+
+</style>
