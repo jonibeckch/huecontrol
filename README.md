@@ -2,7 +2,7 @@
 A simple Project to control your hue lights with a raspberrypi, by opening pages on your local network. 
 
 # view of the newest version
-![alt text](huecontrol_Version2.png)
+![alt text](huecontrol_version2.png)
 
 
 ## Deploy Flask to WSGI Server for reliable use
