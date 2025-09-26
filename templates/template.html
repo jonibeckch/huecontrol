@@ -9,14 +9,9 @@
 <body>
     <h1>Raum Steuerung</h1>
     
-    <div class="all-rooms-container">
-        <span class="all-rooms-label">Alle Räume (EG + Flur + Wohnzimmer)</span>
-        <label class="switch">
-            <input type="checkbox" 
-                   id="all-rooms-toggle" 
-                   {% if group_status['all'] %}checked{% endif %}>
-            <span class="slider"></span>
-        </label>
+    <div class="all-rooms-control">
+        <button class="btn-on" onclick="toggleAllRooms('on')">Alle AN</button>
+        <button class="btn-off" onclick="toggleAllRooms('off')">Alle AUS</button>
     </div>
 
     <table>
@@ -55,45 +50,36 @@
         </div>
         {% endfor %}
     </div>
-
     <script>
-        // Alle Räume Toggle
-        document.getElementById('all-rooms-toggle').addEventListener('change', function() {
-            fetch('/toggle/all')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const allChecked = this.checked;
-                        document.querySelectorAll('.switch input[data-group="erdgeschoss"], .switch input[data-group="flur"], .switch input[data-group="wohnzimmer"]').forEach(checkbox => {
-                            checkbox.checked = allChecked;
-                        });
-                    } else {
-                        this.checked = !this.checked;
-                    }
-                })
-                .catch(error => {
-                    console.error('Fehler:', error);
-                    this.checked = !this.checked;
-                });
+function toggleAllRooms(state) {
+    fetch(`/toggle/all_${state}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Fehler:', error);
         });
+}
 
-        // Individuelle Raum- und Steckdosen-Slider
-        document.querySelectorAll('.switch input[data-group]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const group = this.getAttribute('data-group');
-                fetch(`/toggle/${group}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.success) {
-                            this.checked = !this.checked;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Fehler:', error);
-                        this.checked = !this.checked;
-                    });
+// Einzelner Listener für alle Slider
+document.querySelectorAll('.switch input[data-group]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const group = this.getAttribute('data-group');
+        fetch(`/toggle/${group}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Fehler:', error);
             });
-        });
-    </script>
+    });
+});
+</script>
 </body>
 </html>

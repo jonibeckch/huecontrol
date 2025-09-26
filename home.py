@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, render_template_string
-import phue  # Stelle sicher, dass du die Philips Hue Bridge Library installiert hast
+import phue, time
 
 app = Flask(__name__)
 
@@ -13,7 +13,7 @@ def turn_offf():
        <html lang="en">
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <body style="font-family: 'Roboto', sans-serif;">
-            All lights turned off!<br><br><a href="/">Go back</a>
+            All lights turned off..!<br><br><a href="/">Go back</a>
             </body>
         </html>
     """)
@@ -33,14 +33,16 @@ def turn_onnn():
 
 # Function to turn off the lights
 def turn_off_lights():
-	bridge.set_group(1, 'on', False)
+	bridge.set_group(1, 'on', False) 
 	bridge.set_group(2, 'on', False)
 	bridge.set_group(3, 'on', False)
+	bridge.set_group(5, 'on', False)	
         
 # Function to turn on the lights
 def turn_on_lights():
 	bridge.set_group(1, 'on', True)
 	bridge.set_group(2, 'on', True)
+	bridge.set_group(3, 'on', True)
 	bridge.set_group(3, 'on', True)
 
 # Gruppenkonfiguration
@@ -48,12 +50,13 @@ GROUPS = {
     'all': {'id': None, 'name': 'Alle'},
     'erdgeschoss': {'id': 2, 'name': 'Erdgeschoss'},
     'flur': {'id': 3, 'name': 'Flur'},
-    'wohnzimmer': {'id': 1, 'name': 'Wohnzimmer'}
+    'wohnzimmer': {'id': 1, 'name': 'Wohnzimmer'},
+    'bett': {'id': 5, 'name': 'Bett'} 
 }
 
 # Steuerbare Steckdosen
 PLUGS = {
-    'bett': {'id': 13, 'name': 'Drucker'},
+    'Drucker': {'id': 13, 'name': 'Drucker'},
     'wlan_repeater': {'id': 15, 'name': 'WLAN Repeater'}
 }
 
@@ -92,30 +95,40 @@ def index():
 @app.route('/toggle/<group>')
 def toggle_group(group):
     try:
-        if group == 'all':
-            # Toggele Gruppen 1, 2 und 3
-            all_off = all(not bridge.get_group(g['id'], 'on') for g in GROUPS.values() if g['id'] is not None and g['id'] in [1, 2, 3])
-            
-            for group_id in [1, 2, 3]:
-                bridge.set_group(group_id, 'on', all_off)
+        if group == 'all_on':
+            for group_id in [1, 2, 3, 5]:
+                bridge.set_group(group_id, 'on', True)
+        
+        elif group == 'all_off':
+            for group_id in [1, 2, 3, 5]:
+                bridge.set_group(group_id, 'on', False)
+        
+        elif group == 'bett':
+            # Spezielle Behandlung für Bett
+            bridge.get_light_objects('name')['Bettneu'].alert = 'select'
+            time.sleep(0.1)
+            group_config = GROUPS[group]
+            current_state = bridge.get_group(group_config['id'], 'on')
+            bridge.set_group(group_config['id'], 'on', not current_state)
+        
         elif group in GROUPS:
             # Toggele spezifische Gruppe
             group_config = GROUPS[group]
             current_state = bridge.get_group(group_config['id'], 'on')
             bridge.set_group(group_config['id'], 'on', not current_state)
+        
         elif group in PLUGS:
             # Toggele steuerbare Steckdose
             plug_config = PLUGS[group]
             current_state = bridge.get_light(plug_config['id'], 'on')
-            bridge.set_light(plug_config['id'], 'on', not current_state)
-        else:
-            return jsonify({'error': 'Ungültige Gruppe oder Steckdose'}), 400
+            bridge.set_light([plug_config['id']], 'on', not current_state)
         
         return jsonify({'success': True})
     
     except Exception as e:
-        print(f"Fehler beim Toggeln der Gruppe/Steckdose {group}: {e}")
+        print(f"Fehler beim Toggeln von {group}: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
