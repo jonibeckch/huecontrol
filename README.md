@@ -1,8 +1,8 @@
 # simplehue
 A simple Project to control your hue lights with a raspberrypi, by opening pages on your local network. 
 
-# preview of the new slider menu
-![alt text](slider.jpg)
+# view of the newest version
+![alt text](huecontrol_Version2.png)
 
 
 ## Deploy Flask to WSGI Server for reliable use
